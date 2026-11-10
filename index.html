@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=13">
+<link rel="stylesheet" href="style.css?v=14">
 </head>
 <body>
 
@@ -275,10 +275,10 @@
         <div class="webinar__info">
           <div class="card card--white reveal">
             <div class="auth__row auth__row--head mono"><span>Profession</span><span>Webinar dates (4 PM to 5 PM IST)</span></div>
-            <div class="auth__row"><span>GPs</span><span>Thursday, 12th November 2026</span></div>
-            <div class="auth__row"><span>GPs (second session)</span><span>Friday, 4th December 2026</span></div>
-            <div class="auth__row"><span>Dentists</span><span>Friday, 20th November 2026</span></div>
-            <div class="auth__row"><span>Ayurveda, Homeopathy &amp; Unani</span><span>Friday, 27th November 2026</span></div>
+            <div class="auth__row"><span>GPs</span><span>Thursday, 12th November 2026 <em class="date-tag date-tag--open">Open</em></span></div>
+            <div class="auth__row is-planned"><span>Dentists</span><span>Thursday, 19th November 2026 <em class="date-tag">Planned</em></span></div>
+            <div class="auth__row is-planned"><span>Ayurveda, Homeopathy &amp; Unani</span><span>Thursday, 26th November 2026 <em class="date-tag">Planned</em></span></div>
+            <div class="auth__row is-planned"><span>GPs (second session)</span><span>Thursday, 3rd December 2026 <em class="date-tag">Planned</em></span></div>
           </div>
           <div class="card card--white reveal">
             <p class="mono label">In the webinar, you will learn</p>
@@ -293,7 +293,7 @@
         </div>
 
         <div class="form-card reveal" id="register">
-          <form id="register-form" novalidate data-endpoint="https://script.google.com/macros/s/AKfycby2xHTOziXLS_2bkIaZ3vX7snwf4zuGbj6rWLFjFWWVZMqmUyqgdy26iFH6tejF4et0Zw/exec">
+          <form id="register-form" novalidate data-endpoint="https://n8n.srv1046538.hstgr.cloud/webhook/gcc-web-reg" data-fallback="https://script.google.com/macros/s/AKfycby2xHTOziXLS_2bkIaZ3vX7snwf4zuGbj6rWLFjFWWVZMqmUyqgdy26iFH6tejF4et0Zw/exec">
             <div class="form-card__head"><h3>Register for the free webinar</h3><span class="mono muted" data-count>Step 1 of 5</span></div>
             <div class="progress"><span data-progress style="width: 20%"></span></div>
 
@@ -350,6 +350,7 @@
             <fieldset class="step" data-step="5" hidden>
               <legend class="q">Your webinar date (4 PM to 5 PM IST)</legend>
               <div class="choices choices--col" data-dates></div>
+              <p class="date-note" data-date-note hidden></p>
               <small class="err">Please choose a date.</small>
             </fieldset>
 
@@ -363,9 +364,10 @@
 
           <div class="thanks" data-thanks hidden tabindex="-1">
             <span class="thanks__icon" aria-hidden="true">✓</span>
-            <h3>You're registered!</h3>
-            <p>Your webinar is on <b data-thanks-date></b>, 4 PM to 5 PM IST.</p>
-            <p class="muted">We'll send the joining details to your email.</p>
+            <h3 data-thanks-title>You're registered!</h3>
+            <p data-thanks-text>Your webinar is on <b>Thursday, 12th November 2026</b>, 4 PM to 5 PM IST.</p>
+            <a class="btn btn--dark" data-thanks-link href="#" target="_blank" rel="noopener" hidden><span class="btn__dot"></span>Your Zoom joining link</a>
+            <p class="muted" data-thanks-note>You'll also get this link on WhatsApp and by email from Zoom. Please save it for the day.</p>
           </div>
         </div>
       </div>
@@ -420,6 +422,6 @@
   </div>
 </footer>
 
-<script src="main.js?v=5" defer></script>
+<script src="main.js?v=6" defer></script>
 </body>
 </html>

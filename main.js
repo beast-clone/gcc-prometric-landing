@@ -67,14 +67,17 @@
   const count = form.querySelector('[data-count]');
   const bar = form.querySelector('[data-progress]');
   const thanks = document.querySelector('[data-thanks]');
+  // Only the 12 November webinar is open for registration; the rest are shown as "Planned".
+  const OPEN = 'Thursday, 12th November 2026';
   const SESSIONS = {
-    'MBBS (India)': ['Thursday, 12th November 2026', 'Friday, 4th December 2026'],
-    'MBBS (Abroad, FMG)': ['Thursday, 12th November 2026', 'Friday, 4th December 2026'],
-    'BDS (Dentist)': ['Friday, 20th November 2026'],
-    'BAMS (Ayurveda)': ['Friday, 27th November 2026'],
-    'BHMS (Homeopathy)': ['Friday, 27th November 2026'],
-    'BUMS (Unani)': ['Friday, 27th November 2026'],
+    'MBBS (India)': [OPEN, 'Thursday, 3rd December 2026'],
+    'MBBS (Abroad, FMG)': [OPEN, 'Thursday, 3rd December 2026'],
+    'BDS (Dentist)': ['Thursday, 19th November 2026'],
+    'BAMS (Ayurveda)': ['Thursday, 26th November 2026'],
+    'BHMS (Homeopathy)': ['Thursday, 26th November 2026'],
+    'BUMS (Unani)': ['Thursday, 26th November 2026'],
   };
+  const dateNote = form.querySelector('[data-date-note]');
   let at = 0;
   const val = name => { const r = form.querySelector(`input[name="${name}"]:checked`); return r ? r.value : ''; };
   const isFmg = () => val('profession') === 'MBBS (Abroad, FMG)';
@@ -128,12 +131,61 @@
 
   function fillDates() {
     const list = SESSIONS[val('profession')] || [];
-    dates.replaceChildren(...list.map((d, k) => {
-      const label = document.createElement('label');
-      label.className = 'choice';
-      label.innerHTML = `<input type="radio" name="webinar_date" value="${d}, 4 PM to 5 PM IST" required${k === 0 ? ' checked' : ''}><span>${d}</span>`;
-      return label;
+    const hasOpen = list.includes(OPEN);
+    dates.replaceChildren(...list.map(d => {
+      if (d === OPEN) {
+        const label = document.createElement('label');
+        label.className = 'choice';
+        label.innerHTML = `<input type="radio" name="webinar_date" value="${d}, 4 PM to 5 PM IST" required checked><span>${d}</span>`;
+        return label;
+      }
+      const row = document.createElement('div');
+      row.className = 'choice--planned';
+      row.setAttribute('aria-disabled', 'true');
+      row.innerHTML = `<span>${d}</span><em class="date-tag">Planned</em>`;
+      return row;
     }));
+    if (!hasOpen && list.length) {
+      // Nothing bookable yet: keep the interest, tell them we will message once registration opens.
+      const keep = document.createElement('input');
+      keep.type = 'hidden'; keep.name = 'webinar_date'; keep.value = list[0];
+      dates.append(keep);
+      dateNote.textContent = 'Registration for this webinar opens soon. Submit your details and we will message you on WhatsApp as soon as it opens.';
+      dateNote.hidden = false;
+    } else {
+      dateNote.hidden = true;
+    }
+  }
+
+  const thanksTitle = thanks.querySelector('[data-thanks-title]');
+  const thanksText = thanks.querySelector('[data-thanks-text]');
+  const thanksLink = thanks.querySelector('[data-thanks-link]');
+  const thanksNote = thanks.querySelector('[data-thanks-note]');
+  function done(res, picked) {
+    form.hidden = true;
+    if (res && res.registered && res.join_url) {
+      thanksTitle.textContent = "You're registered!";
+      thanksText.innerHTML = 'Your webinar is on <b>Thursday, 12th November 2026</b>, 4 PM to 5 PM IST.';
+      thanksLink.href = res.join_url; thanksLink.hidden = false;
+      thanksNote.textContent = "You'll also get this link on WhatsApp and by email from Zoom. Please save it for the day.";
+    } else if (res && res.live && res.reg_url) {
+      thanksTitle.textContent = 'One last step';
+      thanksText.innerHTML = 'Complete your Zoom registration for <b>Thursday, 12th November 2026</b>, 4 PM to 5 PM IST.';
+      thanksLink.href = res.reg_url; thanksLink.hidden = false;
+      thanksLink.lastChild.textContent = 'Complete Zoom registration';
+      thanksNote.textContent = 'Zoom will then email you your personal joining link.';
+    } else if (res && res.live === false) {
+      thanksTitle.textContent = 'Thank you, we have your details';
+      thanksText.innerHTML = 'Your webinar on <b>' + picked + '</b> is planned.';
+      thanksLink.hidden = true;
+      thanksNote.textContent = 'We will message you on WhatsApp as soon as registration opens.';
+    } else {
+      thanksTitle.textContent = 'Thank you, we have your details';
+      thanksText.textContent = 'Our team will send you the joining link for your webinar shortly.';
+      thanksLink.hidden = true;
+      thanksNote.textContent = 'Please keep an eye on WhatsApp and your email.';
+    }
+    thanks.hidden = false; thanks.focus();
   }
 
   form.addEventListener('submit', async e => {
@@ -141,17 +193,23 @@
     if (at < path().length - 1) { go(1); return; }
     if (!path().every(valid)) return;
     const endpoint = (form.dataset.endpoint || '').trim();
-    if (!endpoint) { status.textContent = 'Registration is not connected yet: the Google Sheet link still has to be added.'; return; }
+    const fallback = (form.dataset.fallback || '').trim();
     const data = new URLSearchParams(new FormData(form));
-    const chosen = val('webinar_date').replace(', 4 PM to 5 PM IST', '');
-    submit.disabled = true; status.textContent = 'Sending…';
+    const picked = (data.get('webinar_date') || '').replace(', 4 PM to 5 PM IST', '');
+    submit.disabled = true; status.textContent = 'Registering you…';
     try {
-      await fetch(endpoint, { method: 'POST', mode: 'no-cors', body: data });
-      form.hidden = true;
-      thanks.querySelector('[data-thanks-date]').textContent = chosen;
-      thanks.hidden = false; thanks.focus();
+      const r = await fetch(endpoint, { method: 'POST', body: data });
+      const res = await r.json();
+      if (!res || !res.ok) throw new Error('not saved');
+      done(res, picked);
     } catch {
-      status.textContent = 'Could not send. Please check your connection and try again.';
+      // n8n unreachable: still save the lead to the sheet so nobody is lost.
+      try {
+        await fetch(fallback, { method: 'POST', mode: 'no-cors', body: data });
+        done(null, picked);
+      } catch {
+        status.textContent = 'Could not send. Please check your connection and try again.';
+      }
     } finally { submit.disabled = false; }
   });
 

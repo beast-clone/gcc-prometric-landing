@@ -321,3 +321,12 @@ fieldset.step { border: 0; padding: 0; margin: 0; min-width: 0; display: grid; g
   .reveal { opacity: 1; transform: none; }
   html { scroll-behavior: auto; }
 }
+
+/* webinar dates: only the open date is bookable */
+.date-tag { font: 500 10.5px/1 var(--mono); font-style: normal; letter-spacing: .06em; text-transform: uppercase; padding: 4px 7px; border-radius: 999px; margin-left: 6px; background: #ececea; color: #8a8a86; white-space: nowrap; }
+.date-tag--open { background: var(--accent-soft); color: var(--accent); }
+.auth__row.is-planned span { color: #a3a3a0; }
+.choice--planned { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 44px; padding: 0 16px; border: 1px dashed #d6d6d2; border-radius: 10px; color: #a3a3a0; font-size: 15px; background: #f7f7f6; cursor: not-allowed; }
+.date-note { font-size: 13px; color: var(--ink-2); margin-top: 10px; line-height: 1.5; }
+.date-note[hidden] { display: none; }
+.thanks .btn[hidden] { display: none; }
