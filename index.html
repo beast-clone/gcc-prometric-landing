@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=14">
+<link rel="stylesheet" href="style.css?v=15">
 </head>
 <body>
 
@@ -300,7 +300,23 @@
             <fieldset class="step" data-step="1">
               <legend class="sr-only">About you</legend>
               <label class="field"><span>Name</span><input name="name" type="text" autocomplete="name" required><small class="err">Please enter your name.</small></label>
-              <label class="field"><span>Contact number</span><input name="contact_number" type="tel" inputmode="tel" autocomplete="tel" required pattern="[0-9+ ]{10,15}"><small class="err">Please enter a valid contact number.</small></label>
+              <div class="field field--phone" data-phone-field>
+                <span>WhatsApp number</span>
+                <div class="phone-row">
+                  <span class="phone-cc" aria-hidden="true">+91</span>
+                  <input name="contact_number" type="tel" inputmode="numeric" autocomplete="tel-national" maxlength="10" required pattern="[6-9][0-9]{9}" aria-label="WhatsApp number, 10 digits">
+                  <button type="button" class="btn btn--light btn--sm" data-otp-send>Send code</button>
+                </div>
+                <small class="err">Please enter a valid 10-digit mobile number.</small>
+                <div class="otp" data-otp hidden>
+                  <div class="phone-row">
+                    <input data-otp-code type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="6-digit code" aria-label="Verification code">
+                    <button type="button" class="btn btn--dark btn--sm" data-otp-verify>Verify</button>
+                  </div>
+                </div>
+                <p class="otp__msg" data-otp-msg role="status"></p>
+                <input type="hidden" name="wa_token" data-otp-token>
+              </div>
               <label class="field"><span>Email ID</span><input name="email" type="email" autocomplete="email" required><small class="err">Please enter a valid email ID.</small></label>
             </fieldset>
 
@@ -422,6 +438,6 @@
   </div>
 </footer>
 
-<script src="main.js?v=6" defer></script>
+<script src="main.js?v=7" defer></script>
 </body>
 </html>

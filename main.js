@@ -83,6 +83,80 @@
   const isFmg = () => val('profession') === 'MBBS (Abroad, FMG)';
   const path = () => steps.filter(s => s !== fmgStep || isFmg());
 
+  /* ---------- WhatsApp number verification ---------- */
+  const OTP_URL = 'https://n8n.srv1046538.hstgr.cloud/webhook/gcc-web-otp';
+  const phoneField = form.querySelector('[data-phone-field]');
+  const phoneInput = form.querySelector('input[name="contact_number"]');
+  const otpSend = form.querySelector('[data-otp-send]');
+  const otpBox = form.querySelector('[data-otp]');
+  const otpCode = form.querySelector('[data-otp-code]');
+  const otpVerify = form.querySelector('[data-otp-verify]');
+  const otpMsg = form.querySelector('[data-otp-msg]');
+  const otpToken = form.querySelector('[data-otp-token]');
+  let cooldown = null;
+  const say = (text, kind) => { otpMsg.textContent = text; otpMsg.className = 'otp__msg' + (kind ? ' is-' + kind : ''); };
+  const phoneOk = v => /^[6-9]\d{9}$/.test(v) && !/^(\d)\1{6}/.test(v);
+  const otpCall = async params => {
+    try {
+      const r = await fetch(OTP_URL, { method: 'POST', body: new URLSearchParams(params) });
+      return await r.json();
+    } catch { return { ok: false, error: 'Could not reach the server. Please check your connection and try again.' }; }
+  };
+  function resetOtp() {
+    otpToken.value = ''; otpBox.hidden = true; otpCode.value = '';
+    phoneField.classList.remove('is-verified'); phoneInput.readOnly = false;
+    otpSend.textContent = 'Send code'; otpSend.disabled = false;
+    clearInterval(cooldown); say('');
+  }
+  function startCooldown() {
+    let left = 30; otpSend.disabled = true; otpSend.textContent = 'Resend in 30s';
+    clearInterval(cooldown);
+    cooldown = setInterval(() => {
+      left -= 1;
+      if (left <= 0) { clearInterval(cooldown); otpSend.disabled = false; otpSend.textContent = 'Resend code'; }
+      else otpSend.textContent = 'Resend in ' + left + 's';
+    }, 1000);
+  }
+  phoneInput.addEventListener('input', () => {
+    const clean = phoneInput.value.replace(/\D/g, '').slice(0, 10);
+    if (clean !== phoneInput.value) phoneInput.value = clean;
+    if (otpToken.value || !otpBox.hidden) resetOtp();
+  });
+  otpSend.addEventListener('click', async () => {
+    if (phoneField.classList.contains('is-verified')) { resetOtp(); phoneInput.focus(); return; }
+    const v = phoneInput.value;
+    if (!phoneOk(v)) { phoneField.classList.add('is-invalid'); say(''); phoneInput.focus(); return; }
+    phoneField.classList.remove('is-invalid');
+    otpSend.disabled = true; otpSend.textContent = 'Sending…'; say('');
+    const res = await otpCall({ action: 'send', phone: v });
+    if (res.ok) {
+      otpBox.hidden = false; otpCode.focus();
+      say('We sent a 6-digit code to +91 ' + v + ' on WhatsApp.', '');
+      startCooldown();
+    } else {
+      otpSend.disabled = false; otpSend.textContent = 'Send code';
+      say(res.error || 'Could not send the code. Please try again.', 'bad');
+    }
+  });
+  async function verifyOtp() {
+    const code = otpCode.value.replace(/\D/g, '');
+    if (code.length !== 6) { say('Please enter the 6-digit code from WhatsApp.', 'bad'); return; }
+    otpVerify.disabled = true; otpVerify.textContent = 'Checking…';
+    const res = await otpCall({ action: 'verify', phone: phoneInput.value, code });
+    otpVerify.disabled = false; otpVerify.textContent = 'Verify';
+    if (res.ok && res.token) {
+      otpToken.value = res.token; otpBox.hidden = true;
+      phoneField.classList.add('is-verified'); phoneInput.readOnly = true;
+      clearInterval(cooldown); otpSend.disabled = false; otpSend.textContent = 'Change';
+      say('✓ WhatsApp number verified', 'ok');
+    } else {
+      say(res.error || 'Wrong code. Please try again.', 'bad');
+    }
+  }
+  otpVerify.addEventListener('click', verifyOtp);
+  otpCode.addEventListener('input', () => { otpCode.value = otpCode.value.replace(/\D/g, '').slice(0, 6); });
+  otpCode.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); verifyOtp(); } });
+
   // the error line that belongs to a field or a group of choices
   const errFor = input => {
     if (input.type !== 'radio') return input.closest('.field');
@@ -101,6 +175,11 @@
       else holder && holder.classList.toggle('is-invalid', !ok);
       if (!ok && !first) first = input;
     });
+    if (!first && stepEl.contains(otpToken) && !otpToken.value) {
+      if (!phoneField.classList.contains('is-invalid')) say('Please verify your WhatsApp number to continue.', 'bad');
+      (otpBox.hidden ? otpSend : otpCode).focus();
+      return false;
+    }
     if (first) { first.focus(); status.textContent = 'Please complete the highlighted fields.'; return false; }
     status.textContent = '';
     return true;
@@ -197,11 +276,10 @@
     const data = new URLSearchParams(new FormData(form));
     const picked = (data.get('webinar_date') || '').replace(', 4 PM to 5 PM IST', '');
     submit.disabled = true; status.textContent = 'Registering you…';
+    let res = null;
     try {
       const r = await fetch(endpoint, { method: 'POST', body: data });
-      const res = await r.json();
-      if (!res || !res.ok) throw new Error('not saved');
-      done(res, picked);
+      res = await r.json();
     } catch {
       // n8n unreachable: still save the lead to the sheet so nobody is lost.
       try {
@@ -210,7 +288,18 @@
       } catch {
         status.textContent = 'Could not send. Please check your connection and try again.';
       }
-    } finally { submit.disabled = false; }
+      submit.disabled = false;
+      return;
+    }
+    if (res && res.ok) {
+      done(res, picked);
+    } else if (res && res.error === 'verify') {
+      resetOtp(); show(0);
+      say('Please verify your WhatsApp number again to continue.', 'bad');
+    } else {
+      status.textContent = 'Please check your details and try again.';
+    }
+    submit.disabled = false;
   });
 
   show(0);
