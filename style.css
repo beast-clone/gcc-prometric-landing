@@ -276,7 +276,7 @@ fieldset.step { border: 0; padding: 0; margin: 0; min-width: 0; display: grid; g
 
 /* footer */
 .footer { border-top: 1px solid var(--line); padding: 56px 0 28px; }
-.footer__grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 32px; }
+.footer__grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1.2fr; gap: 32px; }
 .footer__grid > div { display: grid; gap: 8px; align-content: start; }
 .footer__grid .label { margin: 0 0 4px; }
 .footer__grid a:not(.logo) { text-decoration: none; color: var(--ink-2); font-size: 15px; }
@@ -346,3 +346,4 @@ fieldset.step { border: 0; padding: 0; margin: 0; min-width: 0; display: grid; g
 .otp__msg.is-bad { color: #c4320a; }
 .field--phone.is-verified .phone-row input[name="contact_number"] { background: #f3faf5; border-color: #9fd3ae; }
 @media (max-width: 420px) { .phone-cc { padding: 0 9px; } .btn--sm { padding: 0 11px; font-size: 14px; } }
+.nowrap { white-space: nowrap; }
