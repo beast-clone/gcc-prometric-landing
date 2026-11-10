@@ -60,6 +60,8 @@ a { color: inherit; }
 /* nav */
 .nav { position: sticky; top: 0; z-index: 20; background: rgba(255,255,255,.92); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
 .nav__bar { display: flex; align-items: center; gap: 24px; height: 68px; }
+.logo__img { display: block; height: 30px; width: auto; }
+.footer .logo__img { height: 34px; }
 .logo { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; font-size: 20px; letter-spacing: -0.03em; text-decoration: none; }
 .logo__dot { width: 18px; height: 18px; border-radius: 50%; background: radial-gradient(circle at 50% 50%, #fff 0 28%, var(--accent) 30%); }
 .nav__links { display: flex; gap: 22px; margin-left: auto; font-size: 14px; }
