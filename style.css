@@ -73,7 +73,13 @@ a { color: inherit; }
 .hero { display: grid; grid-template-columns: 1fr 1fr; min-height: calc(100svh - 68px); border-bottom: 1px solid var(--line); }
 .hero__text { padding: clamp(48px, 7vw, 96px) clamp(24px, 4vw, 48px) 48px max(24px, calc((100vw - 1000px) / 2)); display: flex; flex-direction: column; justify-content: center; }
 .hero h1 { max-width: 11ch; }
-.lead { margin: 24px 0 32px; color: var(--ink-2); font-size: 17px; max-width: 46ch; }
+.lead { margin: 24px 0 20px; color: var(--ink-2); font-size: 17px; max-width: 46ch; }
+.bridge { display: flex; gap: 12px; align-items: flex-start; margin: 0 0 24px; padding: 14px 16px; max-width: 520px; border-radius: 12px;
+  background: var(--accent-soft); color: var(--ink-2); font-size: 14px; line-height: 1.55; text-decoration: none; transition: transform .2s ease; }
+.bridge:hover { transform: translateY(-2px); }
+.bridge b { color: var(--ink); font-weight: 500; display: block; margin-bottom: 2px; }
+.bridge__icon { flex: none; width: 32px; height: 32px; border-radius: 8px; background: #fff; display: grid; place-items: center; }
+.bridge__icon svg { width: 18px; height: 18px; fill: none; stroke: var(--accent); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
 .ticks { list-style: none; padding: 0; margin: 28px 0 0; display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 13px; color: var(--ink-2); }
 .ticks li { display: inline-flex; align-items: center; gap: 6px; }
 .ticks li::before { content: ""; width: 12px; height: 12px; border-radius: 50%; border: 1.5px solid var(--accent);
