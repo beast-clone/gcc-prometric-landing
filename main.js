@@ -68,8 +68,8 @@
   const bar = form.querySelector('[data-progress]');
   const thanks = document.querySelector('[data-thanks]');
   const SESSIONS = {
-    'MBBS (India)': ['Friday, 13th November 2026', 'Friday, 4th December 2026'],
-    'MBBS (Abroad, FMG)': ['Friday, 13th November 2026', 'Friday, 4th December 2026'],
+    'MBBS (India)': ['Thursday, 12th November 2026', 'Friday, 4th December 2026'],
+    'MBBS (Abroad, FMG)': ['Thursday, 12th November 2026', 'Friday, 4th December 2026'],
     'BDS (Dentist)': ['Friday, 20th November 2026'],
     'BAMS (Ayurveda)': ['Friday, 27th November 2026'],
     'BHMS (Homeopathy)': ['Friday, 27th November 2026'],
