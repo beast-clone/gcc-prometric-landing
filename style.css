@@ -159,6 +159,12 @@ a { color: inherit; }
 .icon { width: 44px; height: 44px; border-radius: 50%; background: var(--accent-soft); display: grid; place-items: center; }
 .icon svg { width: 20px; height: 20px; fill: none; stroke: var(--accent); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
 .card h3 { margin-bottom: 4px; }
+/* eligibility cards: tinted header band */
+.elig .card { background: #fff; border: 1px solid var(--line); }
+.elig .card__top { margin: -26px -26px 24px; padding: 22px 26px; background: linear-gradient(135deg, var(--accent-soft), #fff 140%); border-bottom: 1px solid var(--line); border-radius: var(--radius) var(--radius) 0 0; }
+.elig .icon { width: 48px; height: 48px; border-radius: 14px; background: var(--accent); box-shadow: 0 8px 18px -10px var(--accent); }
+.elig .icon svg { stroke: #fff; width: 22px; height: 22px; }
+.elig__tag { font: 500 11px/1 var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2); background: #fff; border: 1px solid var(--line); border-radius: 999px; padding: 7px 11px; white-space: nowrap; }
 .checks { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; font-size: 15px; color: var(--ink-2); }
 .checks li { position: relative; padding-left: 26px; }
 .checks li::before { content: ""; position: absolute; left: 0; top: 4px; width: 16px; height: 16px; border-radius: 50%; background: var(--ink)
