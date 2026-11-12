@@ -104,6 +104,46 @@
   // India: 10 digits starting 6-9. Elsewhere: 6 to 12 digits after the code. Junk like 0000000 is refused.
   const phoneOk = v => (cc() === '91' ? /^[6-9]\d{9}$/.test(v) : /^\d{6,12}$/.test(v)) && !/^(\d)\1{5}/.test(v);
   const fullPhone = () => cc() + phoneInput.value;
+  /* custom country picker (themed list over the hidden select) */
+  const ccBtn = form.querySelector('[data-cc-btn]');
+  const ccPanel = form.querySelector('[data-cc-panel]');
+  const ccSearch = form.querySelector('[data-cc-search]');
+  const ccList = form.querySelector('[data-cc-list]');
+  const ccFlag = form.querySelector('[data-cc-flag]');
+  const flagOf = iso => iso.replace(/./g, ch => String.fromCodePoint(127397 + ch.charCodeAt(0)));
+  const ccItems = [...ccSelect.options].map(o => {
+    const li = document.createElement('li');
+    li.setAttribute('role', 'option'); li.tabIndex = -1; li.dataset.value = o.value;
+    li.innerHTML = `<span class="cc__flag">${flagOf(o.dataset.iso)}</span><span class="cc__name">${o.textContent}</span><span class="cc__code">+${o.value}</span>`;
+    li.addEventListener('click', () => pickCc(o.value));
+    ccList.append(li);
+    return { li, value: o.value, text: (o.textContent + ' ' + o.value + ' +' + o.value).toLowerCase(), iso: o.dataset.iso };
+  });
+  const markCc = () => ccItems.forEach(it => it.li.setAttribute('aria-selected', String(it.value === ccSelect.value)));
+  function openCc() {
+    if (ccSelect.disabled) return;
+    ccPanel.hidden = false; ccBtn.setAttribute('aria-expanded', 'true');
+    ccSearch.value = ''; ccItems.forEach(it => { it.li.hidden = false; });
+    markCc(); ccSearch.focus();
+    const cur = ccItems.find(it => it.value === ccSelect.value); if (cur) cur.li.scrollIntoView({ block: 'nearest' });
+  }
+  function closeCc() { ccPanel.hidden = true; ccBtn.setAttribute('aria-expanded', 'false'); }
+  function pickCc(v) {
+    ccSelect.value = v; ccSelect.dispatchEvent(new Event('change'));
+    const it = ccItems.find(x => x.value === v); if (it) ccFlag.textContent = flagOf(it.iso);
+    closeCc(); phoneInput.focus();
+  }
+  ccBtn.addEventListener('click', () => (ccPanel.hidden ? openCc() : closeCc()));
+  ccSearch.addEventListener('input', () => {
+    const q = ccSearch.value.trim().toLowerCase().replace(/^\+/, '');
+    ccItems.forEach(it => { it.li.hidden = q && !it.text.includes(q); });
+  });
+  ccSearch.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { closeCc(); ccBtn.focus(); }
+    if (e.key === 'Enter') { e.preventDefault(); const first = ccItems.find(it => !it.li.hidden); if (first) pickCc(first.value); }
+  });
+  document.addEventListener('click', e => { if (!ccPanel.hidden && !e.target.closest('[data-cc-picker]')) closeCc(); });
+
   ccSelect.addEventListener('change', () => {
     ccShow.textContent = '+' + cc();
     phoneErr.textContent = cc() === '91' ? 'Please enter a valid 10-digit mobile number.' : 'Please enter a valid mobile number, without the country code.';
@@ -118,7 +158,7 @@
   };
   function resetOtp() {
     otpToken.value = ''; otpBox.hidden = true; otpCode.value = '';
-    phoneField.classList.remove('is-verified'); phoneInput.readOnly = false; ccSelect.disabled = false;
+    phoneField.classList.remove('is-verified'); phoneInput.readOnly = false; ccSelect.disabled = false; ccBtn.disabled = false;
     otpSend.textContent = 'Send code'; otpSend.disabled = false;
     clearInterval(cooldown); say('');
   }
@@ -162,7 +202,7 @@
     otpVerify.disabled = false; otpVerify.textContent = 'Verify';
     if (res.ok && res.token) {
       otpToken.value = res.token; otpBox.hidden = true;
-      phoneField.classList.add('is-verified'); phoneInput.readOnly = true; ccSelect.disabled = true;
+      phoneField.classList.add('is-verified'); phoneInput.readOnly = true; ccSelect.disabled = true; ccBtn.disabled = true;
       clearInterval(cooldown); otpSend.disabled = false; otpSend.textContent = 'Change';
       say('✓ WhatsApp number verified', 'ok');
     } else {

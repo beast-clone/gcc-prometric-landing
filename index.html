@@ -25,7 +25,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=27">
+<link rel="stylesheet" href="style.css?v=28">
 </head>
 <body>
 
@@ -398,7 +398,14 @@
               <div class="field field--phone" data-phone-field>
                 <span>WhatsApp number</span>
                 <div class="phone-row">
-                  <label class="phone-cc-wrap"><span class="phone-cc-show" data-cc-show>+91</span><select class="phone-cc" name="country_code" data-cc aria-label="Country code"><option value="91" selected>+91 India</option><option value="971">+971 UAE</option><option value="966">+966 Saudi Arabia</option><option value="974">+974 Qatar</option><option value="965">+965 Kuwait</option><option value="973">+973 Bahrain</option><option value="968">+968 Oman</option><option value="92">+92 Pakistan</option><option value="880">+880 Bangladesh</option><option value="977">+977 Nepal</option><option value="94">+94 Sri Lanka</option><option value="20">+20 Egypt</option><option value="962">+962 Jordan</option><option value="249">+249 Sudan</option><option value="63">+63 Philippines</option><option value="60">+60 Malaysia</option><option value="65">+65 Singapore</option><option value="44">+44 United Kingdom</option><option value="353">+353 Ireland</option><option value="1">+1 USA / Canada</option><option value="61">+61 Australia</option><option value="64">+64 New Zealand</option><option value="234">+234 Nigeria</option><option value="254">+254 Kenya</option><option value="380">+380 Ukraine</option><option value="7">+7 Russia</option><option value="86">+86 China</option><option value="996">+996 Kyrgyzstan</option><option value="998">+998 Uzbekistan</option><option value="995">+995 Georgia</option><option value="374">+374 Armenia</option></select></label>
+                  <div class="cc" data-cc-picker>
+                    <button type="button" class="phone-cc-wrap cc__btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Country code" data-cc-btn><span class="cc__flag" data-cc-flag>🇮🇳</span><span data-cc-show>+91</span></button>
+                    <div class="cc__panel" data-cc-panel hidden>
+                      <input class="cc__search" type="text" placeholder="Search country or code" autocomplete="off" data-cc-search aria-label="Search country">
+                      <ul class="cc__list" role="listbox" data-cc-list></ul>
+                    </div>
+                    <select name="country_code" data-cc hidden><option value="91" data-iso="IN" selected>India</option><option value="971" data-iso="AE">UAE</option><option value="966" data-iso="SA">Saudi Arabia</option><option value="974" data-iso="QA">Qatar</option><option value="965" data-iso="KW">Kuwait</option><option value="973" data-iso="BH">Bahrain</option><option value="968" data-iso="OM">Oman</option><option value="92" data-iso="PK">Pakistan</option><option value="880" data-iso="BD">Bangladesh</option><option value="977" data-iso="NP">Nepal</option><option value="94" data-iso="LK">Sri Lanka</option><option value="20" data-iso="EG">Egypt</option><option value="962" data-iso="JO">Jordan</option><option value="249" data-iso="SD">Sudan</option><option value="63" data-iso="PH">Philippines</option><option value="60" data-iso="MY">Malaysia</option><option value="65" data-iso="SG">Singapore</option><option value="44" data-iso="GB">United Kingdom</option><option value="353" data-iso="IE">Ireland</option><option value="1" data-iso="US">USA / Canada</option><option value="61" data-iso="AU">Australia</option><option value="64" data-iso="NZ">New Zealand</option><option value="234" data-iso="NG">Nigeria</option><option value="254" data-iso="KE">Kenya</option><option value="380" data-iso="UA">Ukraine</option><option value="7" data-iso="RU">Russia</option><option value="86" data-iso="CN">China</option><option value="996" data-iso="KG">Kyrgyzstan</option><option value="998" data-iso="UZ">Uzbekistan</option><option value="995" data-iso="GE">Georgia</option><option value="374" data-iso="AM">Armenia</option></select>
+                  </div>
                   <input name="contact_number" type="tel" inputmode="numeric" autocomplete="tel-national" maxlength="14" required aria-label="WhatsApp number">
                   <button type="button" class="btn btn--light btn--sm" data-otp-send>Send code</button>
                 </div>
@@ -533,6 +540,6 @@
   </div>
 </footer>
 
-<script src="main.js?v=9" defer></script>
+<script src="main.js?v=10" defer></script>
 </body>
 </html>
