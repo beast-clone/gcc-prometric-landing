@@ -68,10 +68,12 @@
   const bar = form.querySelector('[data-progress]');
   const thanks = document.querySelector('[data-thanks]');
   // Only the 12 November webinar is open for registration; the rest are shown as "Planned".
-  const OPEN = 'Thursday, 12th November 2026';
+  // No webinar is open right now: 12 Nov is over, the rest are planned.
+  const OPEN = '';
+  const CLOSED = ['Thursday, 12th November 2026'];
   const SESSIONS = {
-    'MBBS (India)': [OPEN, 'Thursday, 3rd December 2026'],
-    'MBBS (Abroad, FMG)': [OPEN, 'Thursday, 3rd December 2026'],
+    'MBBS (India)': ['Thursday, 12th November 2026', 'Thursday, 3rd December 2026'],
+    'MBBS (Abroad, FMG)': ['Thursday, 12th November 2026', 'Thursday, 3rd December 2026'],
     'BDS (Dentist)': ['Thursday, 19th November 2026'],
     'BAMS (Ayurveda)': ['Thursday, 26th November 2026'],
     'BHMS (Homeopathy)': ['Thursday, 26th November 2026'],
@@ -210,7 +212,7 @@
 
   function fillDates() {
     const list = SESSIONS[val('profession')] || [];
-    const hasOpen = list.includes(OPEN);
+    const hasOpen = !!OPEN && list.includes(OPEN);
     dates.replaceChildren(...list.map(d => {
       if (d === OPEN) {
         const label = document.createElement('label');
@@ -218,16 +220,17 @@
         label.innerHTML = `<input type="radio" name="webinar_date" value="${d}, 4 PM to 5 PM IST" required checked><span>${d}</span>`;
         return label;
       }
+      const closed = CLOSED.includes(d);
       const row = document.createElement('div');
-      row.className = 'choice--planned';
+      row.className = 'choice--planned' + (closed ? ' is-closed' : '');
       row.setAttribute('aria-disabled', 'true');
-      row.innerHTML = `<span>${d}</span><em class="date-tag">Planned</em>`;
+      row.innerHTML = closed ? `<span>${d}</span><em class="date-tag date-tag--closed">Closed</em>` : `<span>${d}</span><em class="date-tag">Planned</em>`;
       return row;
     }));
     if (!hasOpen && list.length) {
       // Nothing bookable yet: keep the interest, tell them we will message once registration opens.
       const keep = document.createElement('input');
-      keep.type = 'hidden'; keep.name = 'webinar_date'; keep.value = list[0];
+      keep.type = 'hidden'; keep.name = 'webinar_date'; keep.value = list.find(d => !CLOSED.includes(d)) || list[0];
       dates.append(keep);
       dateNote.textContent = 'Registration for this webinar opens soon. Submit your details and we will message you on WhatsApp as soon as it opens.';
       dateNote.hidden = false;

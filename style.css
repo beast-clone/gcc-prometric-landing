@@ -375,3 +375,9 @@ fieldset.step { border: 0; padding: 0; margin: 0; min-width: 0; display: grid; g
 @media (max-width: 960px) { .df-docs { grid-template-columns: 1fr; gap: 24px; } }
 @media (max-width: 640px) { .df-grid { grid-template-columns: 1fr; } .df-list { padding: 18px 18px 20px; } }
 @media (max-width: 960px) { .section--dark .sub { margin-top: 18px; } }
+
+/* form steps sit straight on the white form card (no grey box, fields keep their margins) */
+fieldset.step { background: none; border-radius: 0; }
+.date-tag--closed { background: #2a2a2a; color: #fff; }
+.auth__row.is-closed span { color: #a3a3a0; }
+.choice--planned.is-closed span { text-decoration: line-through; }
