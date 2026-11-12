@@ -381,3 +381,17 @@ fieldset.step { background: none; border-radius: 0; }
 .date-tag--closed { background: #2a2a2a; color: #fff; }
 .auth__row.is-closed span { color: #a3a3a0; }
 .choice--planned.is-closed span { text-decoration: line-through; }
+
+/* Job Support & Career Advancement */
+#jobs .sub { margin-top: 0; }
+.job-cta { margin-top: 20px; }
+.job-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 8px; }
+.job-card { padding: 26px; display: grid; align-content: start; gap: 10px; }
+.job-card h3 { font-size: 19px; letter-spacing: -0.01em; margin: 10px 0 4px; }
+.job-card .checks li { font-size: 14.5px; }
+.job-card--cta { background: #121212; color: #f4f2ef; border-radius: var(--radius); align-content: center; }
+.job-card--cta h3 { color: #fff; font-size: 22px; line-height: 1.2; margin-top: 0; }
+.job-card--cta p { color: #b9b6b1; font-size: 15px; margin: 0 0 8px; }
+.job-card--cta .btn { justify-self: start; }
+@media (max-width: 960px) { .job-grid { grid-template-columns: 1fr 1fr; } #jobs .sub { margin-top: 18px; } }
+@media (max-width: 640px) { .job-grid { grid-template-columns: 1fr; } .job-card { padding: 22px; } }
