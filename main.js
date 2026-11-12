@@ -97,7 +97,19 @@
   const otpToken = form.querySelector('[data-otp-token]');
   let cooldown = null;
   const say = (text, kind) => { otpMsg.textContent = text; otpMsg.className = 'otp__msg' + (kind ? ' is-' + kind : ''); };
-  const phoneOk = v => /^[6-9]\d{9}$/.test(v) && !/^(\d)\1{6}/.test(v);
+  const ccSelect = form.querySelector('[data-cc]');
+  const ccShow = form.querySelector('[data-cc-show]');
+  const phoneErr = form.querySelector('[data-phone-err]');
+  const cc = () => ccSelect.value;
+  // India: 10 digits starting 6-9. Elsewhere: 6 to 12 digits after the code. Junk like 0000000 is refused.
+  const phoneOk = v => (cc() === '91' ? /^[6-9]\d{9}$/.test(v) : /^\d{6,12}$/.test(v)) && !/^(\d)\1{5}/.test(v);
+  const fullPhone = () => cc() + phoneInput.value;
+  ccSelect.addEventListener('change', () => {
+    ccShow.textContent = '+' + cc();
+    phoneErr.textContent = cc() === '91' ? 'Please enter a valid 10-digit mobile number.' : 'Please enter a valid mobile number, without the country code.';
+    phoneInput.maxLength = cc() === '91' ? 10 : 12;
+    if (otpToken.value || !otpBox.hidden) resetOtp();
+  });
   const otpCall = async params => {
     try {
       const r = await fetch(OTP_URL, { method: 'POST', body: new URLSearchParams(params) });
@@ -106,7 +118,7 @@
   };
   function resetOtp() {
     otpToken.value = ''; otpBox.hidden = true; otpCode.value = '';
-    phoneField.classList.remove('is-verified'); phoneInput.readOnly = false;
+    phoneField.classList.remove('is-verified'); phoneInput.readOnly = false; ccSelect.disabled = false;
     otpSend.textContent = 'Send code'; otpSend.disabled = false;
     clearInterval(cooldown); say('');
   }
@@ -120,7 +132,9 @@
     }, 1000);
   }
   phoneInput.addEventListener('input', () => {
-    const clean = phoneInput.value.replace(/\D/g, '').slice(0, 10);
+    let clean = phoneInput.value.replace(/\D/g, '');
+    if (cc() !== '91') clean = clean.replace(/^0+/, '');
+    clean = clean.slice(0, cc() === '91' ? 10 : 12);
     if (clean !== phoneInput.value) phoneInput.value = clean;
     if (otpToken.value || !otpBox.hidden) resetOtp();
   });
@@ -130,10 +144,10 @@
     if (!phoneOk(v)) { phoneField.classList.add('is-invalid'); say(''); phoneInput.focus(); return; }
     phoneField.classList.remove('is-invalid');
     otpSend.disabled = true; otpSend.textContent = 'Sending…'; say('');
-    const res = await otpCall({ action: 'send', phone: v });
+    const res = await otpCall({ action: 'send', phone: fullPhone() });
     if (res.ok) {
       otpBox.hidden = false; otpCode.focus();
-      say('We sent a 6-digit code to +91 ' + v + ' on WhatsApp.', '');
+      say('We sent a 6-digit code to +' + cc() + ' ' + v + ' on WhatsApp.', '');
       startCooldown();
     } else {
       otpSend.disabled = false; otpSend.textContent = 'Send code';
@@ -144,11 +158,11 @@
     const code = otpCode.value.replace(/\D/g, '');
     if (code.length !== 6) { say('Please enter the 6-digit code from WhatsApp.', 'bad'); return; }
     otpVerify.disabled = true; otpVerify.textContent = 'Checking…';
-    const res = await otpCall({ action: 'verify', phone: phoneInput.value, code });
+    const res = await otpCall({ action: 'verify', phone: fullPhone(), code });
     otpVerify.disabled = false; otpVerify.textContent = 'Verify';
     if (res.ok && res.token) {
       otpToken.value = res.token; otpBox.hidden = true;
-      phoneField.classList.add('is-verified'); phoneInput.readOnly = true;
+      phoneField.classList.add('is-verified'); phoneInput.readOnly = true; ccSelect.disabled = true;
       clearInterval(cooldown); otpSend.disabled = false; otpSend.textContent = 'Change';
       say('✓ WhatsApp number verified', 'ok');
     } else {
@@ -277,6 +291,8 @@
     const endpoint = (form.dataset.endpoint || '').trim();
     const fallback = (form.dataset.fallback || '').trim();
     const data = new URLSearchParams(new FormData(form));
+    data.set('contact_number', '+' + fullPhone());
+    data.delete('country_code');
     const picked = (data.get('webinar_date') || '').replace(', 4 PM to 5 PM IST', '');
     submit.disabled = true; status.textContent = 'Registering you…';
     let res = null;

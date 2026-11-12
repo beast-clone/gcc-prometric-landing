@@ -395,3 +395,11 @@ fieldset.step { background: none; border-radius: 0; }
 .job-card--cta .btn { justify-self: start; }
 @media (max-width: 960px) { .job-grid { grid-template-columns: 1fr 1fr; } #jobs .sub { margin-top: 18px; } }
 @media (max-width: 640px) { .job-grid { grid-template-columns: 1fr; } .job-card { padding: 22px; } }
+
+/* country code picker: a native select styled like the old +91 box */
+.phone-cc-wrap { position: relative; flex: none; height: 48px; min-width: 64px; border: 1px solid #dcdcd9; border-radius: 10px; background: #f7f7f6; display: grid; place-items: center; padding: 0 22px 0 12px; font: 500 15px var(--font); color: var(--ink); cursor: pointer; }
+.phone-cc-wrap::after { content: ""; position: absolute; right: 10px; top: 50%; width: 6px; height: 6px; border-right: 1.5px solid #555; border-bottom: 1.5px solid #555; transform: translateY(-70%) rotate(45deg); pointer-events: none; }
+.phone-cc-wrap .phone-cc { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; border: 0; padding: 0; background: none; font-size: 16px; }
+.phone-cc-wrap:focus-within { border-color: var(--ink); }
+.field--phone.is-verified .phone-cc-wrap { opacity: .7; cursor: default; }
+@media (max-width: 480px) { .field--phone > .phone-row:first-of-type { flex-wrap: wrap; } .field--phone > .phone-row:first-of-type .btn--sm { flex: 1 0 100%; } }
