@@ -74,7 +74,7 @@
   const SESSIONS = {
     'MBBS (India)': ['Thursday, 12th November 2026', 'Thursday, 3rd December 2026'],
     'MBBS (Abroad, FMG)': ['Thursday, 12th November 2026', 'Thursday, 3rd December 2026'],
-    'BDS (Dentist)': ['Thursday, 19th November 2026'],
+    'BDS (Dentist)': [],
     'BAMS (Ayurveda)': ['Thursday, 26th November 2026'],
     'BHMS (Homeopathy)': ['Thursday, 26th November 2026'],
     'BUMS (Unani)': ['Thursday, 26th November 2026'],
@@ -281,7 +281,14 @@
       row.innerHTML = closed ? `<span>${d}</span><em class="date-tag date-tag--closed">Closed</em>` : `<span>${d}</span><em class="date-tag">Planned</em>`;
       return row;
     }));
-    if (!hasOpen && list.length) {
+    if (!list.length) {
+      // No webinar date for this profession yet: keep the interest.
+      const keep = document.createElement('input');
+      keep.type = 'hidden'; keep.name = 'webinar_date'; keep.value = 'Date to be announced';
+      dates.append(keep);
+      dateNote.textContent = 'The webinar date for your profession will be announced soon. Submit your details and we will message you on WhatsApp.';
+      dateNote.hidden = false;
+    } else if (!hasOpen) {
       // Nothing bookable yet: keep the interest, tell them we will message once registration opens.
       const keep = document.createElement('input');
       keep.type = 'hidden'; keep.name = 'webinar_date'; keep.value = list.find(d => !CLOSED.includes(d)) || list[0];
@@ -312,7 +319,7 @@
       thanksNote.textContent = 'Zoom will then email you your personal joining link.';
     } else if (res && res.live === false) {
       thanksTitle.textContent = 'Thank you, we have your details';
-      thanksText.innerHTML = 'Your webinar on <b>' + picked + '</b> is planned.';
+      thanksText.innerHTML = picked && picked !== 'Date to be announced' ? 'Your webinar on <b>' + picked + '</b> is planned.' : 'The webinar date for your profession will be announced soon.';
       thanksLink.hidden = true;
       thanksNote.textContent = 'We will message you on WhatsApp as soon as registration opens.';
     } else {
