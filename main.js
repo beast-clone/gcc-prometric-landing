@@ -68,16 +68,16 @@
   const bar = form.querySelector('[data-progress]');
   const thanks = document.querySelector('[data-thanks]');
   // Only the 12 November webinar is open for registration; the rest are shown as "Planned".
-  // No webinar is open right now: 12 Nov is over, the rest are planned.
-  const OPEN = '';
+  // 26 Nov is open for every profession; 12 Nov is over; 3 Dec (GPs) is planned.
+  const OPEN = 'Thursday, 26th November 2026';
   const CLOSED = ['Thursday, 12th November 2026'];
   const SESSIONS = {
-    'MBBS (India)': ['Thursday, 12th November 2026', 'Thursday, 3rd December 2026'],
-    'MBBS (Abroad, FMG)': ['Thursday, 12th November 2026', 'Thursday, 3rd December 2026'],
-    'BDS (Dentist)': [],
-    'BAMS (Ayurveda)': ['Thursday, 26th November 2026'],
-    'BHMS (Homeopathy)': ['Thursday, 26th November 2026'],
-    'BUMS (Unani)': ['Thursday, 26th November 2026'],
+    'MBBS (India)': ['Thursday, 12th November 2026', OPEN, 'Thursday, 3rd December 2026'],
+    'MBBS (Abroad, FMG)': ['Thursday, 12th November 2026', OPEN, 'Thursday, 3rd December 2026'],
+    'BDS (Dentist)': [OPEN],
+    'BAMS (Ayurveda)': [OPEN],
+    'BHMS (Homeopathy)': [OPEN],
+    'BUMS (Unani)': [OPEN],
   };
   const dateNote = form.querySelector('[data-date-note]');
   let at = 0;
@@ -308,12 +308,12 @@
     form.hidden = true;
     if (res && res.registered && res.join_url) {
       thanksTitle.textContent = "You're registered!";
-      thanksText.innerHTML = 'Your webinar is on <b>Thursday, 12th November 2026</b>, 4 PM to 5 PM IST.';
+      thanksText.innerHTML = 'Your webinar is on <b>' + (picked || OPEN) + '</b>, 4 PM to 5 PM IST.';
       thanksLink.href = res.join_url; thanksLink.hidden = false;
       thanksNote.textContent = "You'll also get this link on WhatsApp and by email from Zoom. Please save it for the day.";
     } else if (res && res.live && res.reg_url) {
       thanksTitle.textContent = 'One last step';
-      thanksText.innerHTML = 'Complete your Zoom registration for <b>Thursday, 12th November 2026</b>, 4 PM to 5 PM IST.';
+      thanksText.innerHTML = 'Complete your Zoom registration for <b>' + (picked || OPEN) + '</b>, 4 PM to 5 PM IST.';
       thanksLink.href = res.reg_url; thanksLink.hidden = false;
       thanksLink.lastChild.textContent = 'Complete Zoom registration';
       thanksNote.textContent = 'Zoom will then email you your personal joining link.';
