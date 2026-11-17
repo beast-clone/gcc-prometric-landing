@@ -429,3 +429,7 @@ fieldset.step { background: none; border-radius: 0; }
 .price span { white-space: nowrap; }
 .price-actions { display: grid; gap: 10px; }
 .price-card .btn--light { background: #fff; }
+
+/* Razorpay payment button on the price card */
+.rzp-pay { position: absolute; width: 1px; height: 1px; overflow: hidden; opacity: 0; pointer-events: none; }
+.price-actions { position: relative; }

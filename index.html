@@ -25,7 +25,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=32">
+<link rel="stylesheet" href="style.css?v=34">
 </head>
 <body>
 
@@ -249,7 +249,9 @@
             <li>Live Q&amp;A to clear your doubts in real time</li>
           </ul>
           <div class="price-actions">
-            <a class="btn btn--dark btn--block" href="https://rzp.io/rzp/GCCPrometricBatch" target="_blank" rel="noopener"><span class="btn__dot"></span>Pay Now ₹35,400</a>
+            <!-- Razorpay Payment Button: opens the payment window right here (Rs 35,400). Falls back to the payment page if the script is blocked. -->
+            <a class="btn btn--dark btn--block" href="https://rzp.io/rzp/GCCPrometricBatch" data-pay-now><span class="btn__dot"></span>Pay Now ₹35,400</a>
+            <form class="rzp-pay" aria-hidden="true"><script src="https://checkout.razorpay.com/v1/payment-button.js" data-payment_button_id="pl_U1BllMZttfOXOD" async></script></form>
             <a class="btn btn--light btn--block" href="https://wa.me/919019925848?text=Hi%2C%20I%27m%20interested%20in%20the%20GCC%20Prometric%20Exam%20Preparation%20Batch%20%28%E2%82%B930%2C000%20%2B%20GST%2C%20starting%209%20December%202026%29.%20Please%20share%20the%20details." target="_blank" rel="noopener"><span class="btn__dot"></span>Enquire Now</a>
           </div>
           <p class="pay-note">Secure payment via Razorpay: UPI, cards and net banking.</p>
@@ -547,6 +549,6 @@
   </div>
 </footer>
 
-<script src="main.js?v=12" defer></script>
+<script src="main.js?v=13" defer></script>
 </body>
 </html>
