@@ -430,3 +430,4 @@ fieldset.step { background: none; border-radius: 0; }
 .price-actions { display: grid; gap: 10px; }
 .price-card .btn--light { background: #fff; }
 
+.enquire-note { font-size: 17px; line-height: 1.5; }
