@@ -433,3 +433,5 @@ fieldset.step { background: none; border-radius: 0; }
 /* Razorpay payment button on the price card */
 .rzp-pay { position: absolute; width: 1px; height: 1px; overflow: hidden; opacity: 0; pointer-events: none; }
 .price-actions { position: relative; }
+/* Razorpay keeps its form narrow; enlarge its window on laptops and desktops (phones already get it full screen) */
+@media (min-width: 720px) and (min-height: 700px) { .razorpay-payment-form-frame { transform: scale(1.25); transform-origin: 50% 50%; } }
