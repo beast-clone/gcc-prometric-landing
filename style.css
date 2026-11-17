@@ -418,3 +418,8 @@ fieldset.step { background: none; border-radius: 0; }
 .cc__list li[aria-selected="true"] { background: var(--accent-soft); color: var(--accent); font-weight: 500; }
 .cc__code { font: 500 13px var(--mono); color: var(--muted); }
 .cc__list li[aria-selected="true"] .cc__code { color: var(--accent); }
+
+.enquire-note { font-size: 15px; font-weight: 500; color: var(--ink); margin: 0 0 12px; }
+.section--dark .enquire-note { color: #f4f2ef; }
+.job-cta { margin-top: 0; }
+#jobs .enquire-note { margin-top: 20px; }
