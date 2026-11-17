@@ -54,14 +54,6 @@
   };
   rows.forEach((r, i) => { r.addEventListener('mouseenter', () => pick(i)); r.addEventListener('focus', () => pick(i)); r.addEventListener('click', () => pick(i)); });
 
-  /* ---------- Pay Now: open Razorpay's payment window on this page ---------- */
-  const payNow = document.querySelector('[data-pay-now]');
-  if (payNow) payNow.addEventListener('click', e => {
-    const rzp = document.querySelector('.rzp-pay .razorpay-payment-button a, .rzp-pay .razorpay-payment-button button, .rzp-pay a, .rzp-pay button');
-    if (rzp) { e.preventDefault(); rzp.click(); }
-    // otherwise the link opens the Razorpay payment page as a fallback
-  });
-
   /* ---------- registration form, one step at a time ---------- */
   const form = document.getElementById('register-form');
   if (!form) return;
